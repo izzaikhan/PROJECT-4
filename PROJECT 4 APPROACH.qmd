@@ -1,0 +1,94 @@
+# Project 4 – Document Classification (Approach)
+Izza Khan  
+DATA 607  
+---
+
+## Introduction
+
+For this project, I will build a document classification model to distinguish between spam and non-spam (ham) emails. Document classification is a common application of data science and natural language processing, where text data is analyzed to predict categories.
+
+The goal of this project is to use a labeled dataset of emails to train a model and then apply it to classify new, unseen documents.
+
+---
+
+## Business Question
+
+The main question I want to answer is:
+
+How can we accurately identify whether an email is spam or not using patterns in the text?
+
+This problem is important because spam detection helps improve user experience, reduces security risks, and prevents unwanted or harmful messages from reaching users.
+
+---
+
+## Data Question
+
+To answer this, I translate it into a data question:
+
+What words, patterns, or features in email text can be used to predict whether an email is spam or ham?
+
+This involves analyzing the frequency and importance of words in labeled documents and using those features to train a classification model.
+
+---
+
+## Data Source
+
+I plan to use a publicly available dataset such as the SpamAssassin Public Corpus:
+
+https://spamassassin.apache.org/old/publiccorpus/
+
+This dataset contains:
+- Spam emails
+- Ham (non-spam) emails
+
+Each document is already labeled, making it suitable for supervised learning.
+
+The dataset consists of raw text files, which will need to be read, processed, and converted into a structured format for analysis.
+
+---
+
+## Approach / Method
+
+To solve this problem, I will follow these steps:
+
+1. **Data Collection**
+   - Download and unzip the dataset
+   - Load spam and ham emails into R
+
+2. **Data Preparation**
+   - Convert raw text files into a data frame
+   - Assign labels (spam = 1, ham = 0)
+
+3. **Text Cleaning**
+   - Remove punctuation, numbers, and stopwords
+   - Convert text to lowercase
+   - Perform tokenization (breaking text into words)
+
+4. **Feature Engineering**
+   - Create a document-term matrix (DTM)
+   - Convert text into numerical features using word frequencies or TF-IDF
+
+5. **Model Building**
+   - Split the dataset into training and testing sets
+   - Train a classification model (e.g., Naive Bayes or logistic regression)
+
+6. **Evaluation**
+   - Test the model on unseen data
+   - Measure accuracy, precision, and recall
+
+7. **Prediction**
+   - Use the trained model to classify new emails as spam or ham
+
+---
+
+## Expected Challenges
+
+Some challenges I anticipate include:
+
+- Handling raw text files and converting them into structured data
+- Cleaning text data without losing important meaning
+- Managing large numbers of features in the document-term matrix
+- Avoiding overfitting in the model
+- Ensuring the model performs well on new, unseen data
+
+To address these challenges, I will carefully preprocess the text, test multiple approaches if needed, and validate the model using a test dataset.
