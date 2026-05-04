@@ -1,0 +1,119 @@
+---
+title: "PROJECT 4 CODE BASE"
+author: "IZZA KHAN"
+format: html
+editor: visual
+---
+
+```{R}
+library(tm)
+library(tidyverse)
+library(caret)
+library(e1071)
+library(SnowballC)
+```
+
+```{R}
+list.files()
+```
+```{R}
+spam_dir <- "spam"
+ham_dir <- "easy_ham"
+
+spam_files <- list.files(spam_dir, full.names = TRUE)
+ham_files <- list.files(ham_dir, full.names = TRUE)
+```
+
+```{R}
+read_email <- function(path) {
+  text <- readLines(path, warn = FALSE, encoding = "UTF-8")
+  text <- iconv(text, from = "UTF-8", to = "UTF-8", sub = "")
+  paste(text, collapse = " ")
+}
+spam_files <- spam_files[1:200]
+ham_files <- ham_files[1:200]
+
+spam_text <- sapply(spam_files, read_email)
+ham_text <- sapply(ham_files, read_email)
+```
+
+```{R}
+data <- data.frame(
+  text = c(spam_text, ham_text),
+  label = c(rep("spam", length(spam_text)), rep("ham", length(ham_text)))
+)
+```
+
+```{R}
+data$text <- iconv(data$text, from = "UTF-8", to = "ASCII", sub = "")
+```
+
+```{R}
+corpus <- VCorpus(VectorSource(data$text))
+
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, removeNumbers)
+corpus <- tm_map(corpus, removeWords, stopwords("english"))
+corpus <- tm_map(corpus, stemDocument)
+```
+
+```{R}
+dtm <- DocumentTermMatrix(corpus)
+```
+```{R}
+dtm
+```
+
+```{R}
+set.seed(123)
+
+train_index <- createDataPartition(data$label, p = 0.8, list = FALSE)
+
+dtm_train <- dtm[train_index, ]
+dtm_test <- dtm[-train_index, ]
+
+label_train <- data$label[train_index]
+label_test <- data$label[-train_index]
+```
+
+```{R}
+model <- naiveBayes(as.matrix(dtm_train), label_train)
+```
+
+```{R}
+predictions <- predict(model, as.matrix(dtm_test))
+```
+
+```{R}
+dtm <- removeSparseTerms(dtm, 0.99)
+```
+
+```{R}
+label_test <- factor(label_test)
+predictions <- factor(predictions)
+```
+
+```{R}
+levels(predictions) <- levels(label_test)
+```
+
+```{R}
+confusionMatrix(predictions, label_test)
+```
+
+### Analysis
+
+A Naive Bayes classification model was used to classify emails as either spam or ham. The dataset was preprocessed by converting text to lowercase, removing punctuation, numbers, and common stopwords, and applying stemming to reduce words to their root form.
+
+The data was then transformed into a document-term matrix, which allowed the text data to be converted into a numerical format suitable for modeling. The dataset was split into training and testing sets, and the model was trained on the training data.
+
+The confusion matrix shows the performance of the model in predicting whether emails are spam or not. Based on the results, the model demonstrates a reasonable ability to distinguish between spam and ham emails. The accuracy reflects how well the model performed on unseen data.
+
+## Conclusions
+
+This project demonstrated how text data can be used to build a classification model. By applying natural language processing techniques and a Naive Bayes classifier, it was possible to predict whether an email is spam or not.
+
+The results show that even with a reduced dataset, the model can achieve meaningful performance. This highlights the effectiveness of document classification in real-world applications such as spam detection.
+
+Future improvements could include using larger datasets, applying TF-IDF instead of raw word counts, or testing more advanced machine learning models.
